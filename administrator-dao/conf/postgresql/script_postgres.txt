@@ -1,0 +1,94 @@
+CREATE TABLE tablename (
+colname SERIAL
+);
+
+testdb=# CREATE TABLE COMPANY(
+   ID  SERIAL PRIMARY KEY,
+   NAME           TEXT      NOT NULL,
+   AGE            INT       NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+
+INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY)
+VALUES ( 'Paul', 32, 'California', 20000.00 );
+
+INSERT INTO COMPANY (NAME,AGE,ADDRESS,SALARY)
+VALUES ('Allen', 25, 'Texas', 15000.00 );
+
+
+-- Sequence: times_limit_id_seq
+
+-- DROP SEQUENCE times_limit_id_seq;
+
+CREATE SEQUENCE times_limit_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE times_limit_id_seq OWNER TO postgres;
+
+
+-- Table: times_limit
+
+-- DROP TABLE times_limit;
+
+CREATE TABLE times_limit
+(
+  id serial NOT NULL,
+  description character varying(30) NOT NULL,
+  time_limit_month integer NOT NULL,
+  CONSTRAINT times_limit_pkey PRIMARY KEY (id),
+  CONSTRAINT times_limit_description_key UNIQUE (description) 
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE times_limit OWNER TO postgres;
+
+INSERT INTO times_limit(
+            description, time_limit_month)
+    VALUES ('Semestral', 6);
+
+
+	
+-- Sequence: channels_id_seq
+
+-- DROP SEQUENCE channels_id_seq;
+
+CREATE SEQUENCE channels_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 3
+  CACHE 1;
+ALTER TABLE channels_id_seq OWNER TO postgres;
+	
+	
+-- Table: channels
+
+-- DROP TABLE channels;
+
+CREATE TABLE channels
+(
+  id serial NOT NULL,
+  description character varying(30) NOT NULL,
+  CONSTRAINT channels_pkey PRIMARY KEY (id),
+  CONSTRAINT channels_description_key UNIQUE (description)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE channels OWNER TO postgres;
+
+INSERT INTO channels(
+            id, description)
+    VALUES ('Web');
+
+	
+	
+#############################
+
+
+

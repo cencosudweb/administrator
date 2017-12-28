@@ -1,0 +1,468 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+DROP SCHEMA IF EXISTS `payments_admin` ;
+CREATE SCHEMA IF NOT EXISTS `payments_admin` DEFAULT CHARACTER SET latin1 ;
+DROP SCHEMA IF EXISTS `payments_kit` ;
+CREATE SCHEMA IF NOT EXISTS `payments_kit` ;
+USE `payments_admin` ;
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`times_limit`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`times_limit` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `description` VARCHAR(45) NOT NULL ,
+  `time_limit_month` INT NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`agreement`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`agreement` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `numero_convenio` VARCHAR(10) NOT NULL ,
+  `status` INT(1) NOT NULL ,
+  `fecha_inicio` INT(10) NULL DEFAULT NULL ,
+  `fecha_fin` INT(10) NULL DEFAULT NULL ,
+  `id_time_limit` INT NULL DEFAULT NULL ,
+  `commerce_id` INT(11) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_time_limit_idx` (`id_time_limit` ASC) ,
+  CONSTRAINT `fk_time_limit`
+    FOREIGN KEY (`id_time_limit` )
+    REFERENCES `payments_admin`.`times_limit` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`authorities`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`authorities` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `authority` VARCHAR(45) NOT NULL ,
+  `description` VARCHAR(45) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`economic_activity`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`economic_activity` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `nombre` VARCHAR(300) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`commerce`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`commerce` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `rut` VARCHAR(12) NOT NULL ,
+  `razon_social` VARCHAR(45) NOT NULL ,
+  `mnemotecnico` VARCHAR(5) NOT NULL ,
+  `fecha_activacion` INT(10) NOT NULL ,
+  `id_actividad_economica` INT(11) NOT NULL ,
+  `status` INT(1) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `rut_UNIQUE` (`rut` ASC) ,
+  INDEX `fk_economic_activity_idx` (`id_actividad_economica` ASC) ,
+  CONSTRAINT `fk_economic_activity`
+    FOREIGN KEY (`id_actividad_economica` )
+    REFERENCES `payments_admin`.`economic_activity` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`financial_institution`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`financial_institution` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `rut` VARCHAR(12) NOT NULL ,
+  `razon_social` VARCHAR(45) NOT NULL ,
+  `mnemotecnico` VARCHAR(5) NOT NULL ,
+  `fecha_activacion` INT(10) NULL DEFAULT NULL ,
+  `status` INT(1) NULL DEFAULT NULL ,
+  `invocation_path` VARCHAR(500) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `rut_UNIQUE` (`rut` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`commerce_agreement_fi`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`commerce_agreement_fi` (
+  `financial_institution_id` INT(11) NOT NULL ,
+  `commerce_id` INT(11) NOT NULL ,
+  `agreement_id` INT(11) NOT NULL ,
+  INDEX `fk_commerce_agreement_if_financial_institution1_idx` (`financial_institution_id` ASC) ,
+  INDEX `fk_commerce_agreement_if_commerce_idx` (`commerce_id` ASC) ,
+  INDEX `fk_commerce_agreement_if_agreement1_idx` (`agreement_id` ASC) ,
+  PRIMARY KEY (`financial_institution_id`, `commerce_id`, `agreement_id`) ,
+  CONSTRAINT `fk_commerce_agreement_if_commerce`
+    FOREIGN KEY (`commerce_id` )
+    REFERENCES `payments_admin`.`commerce` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_commerce_agreement_if_financial_institution1`
+    FOREIGN KEY (`financial_institution_id` )
+    REFERENCES `payments_admin`.`financial_institution` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_commerce_agreement_if_agreement1`
+    FOREIGN KEY (`agreement_id` )
+    REFERENCES `payments_admin`.`agreement` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`questions`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`questions` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `question` VARCHAR(300) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`questions_answers`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`questions_answers` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `question` VARCHAR(300) NULL DEFAULT NULL ,
+  `answer` VARCHAR(300) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`channels`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`channels` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `description` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`urls_callback`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`urls_callback` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `id_agreement` INT(11) NULL DEFAULT NULL ,
+  `end_path` VARCHAR(500) NULL DEFAULT NULL ,
+  `confirmation_path` VARCHAR(500) NULL DEFAULT NULL ,
+  `id_channel` INT NULL DEFAULT NULL ,
+  `confirmation_method` VARCHAR(15) NULL ,
+  `confirmation_output` VARCHAR(15) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_agreement_idx` (`id_agreement` ASC) ,
+  INDEX `fk_channel_idx` (`id_channel` ASC) ,
+  CONSTRAINT `fk_agreement`
+    FOREIGN KEY (`id_agreement` )
+    REFERENCES `payments_admin`.`agreement` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_channel`
+    FOREIGN KEY (`id_channel` )
+    REFERENCES `payments_admin`.`channels` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`users`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`users` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `username` VARCHAR(10) NOT NULL ,
+  `password` VARCHAR(50) NOT NULL ,
+  `name` VARCHAR(300) NULL DEFAULT NULL ,
+  `rut` VARCHAR(11) NULL DEFAULT NULL ,
+  `email` VARCHAR(45) NOT NULL ,
+  `phone` VARCHAR(15) NULL DEFAULT NULL ,
+  `status` INT(1) NULL DEFAULT '2' ,
+  `attempts` INT(1) NULL DEFAULT '3' ,
+  `password_expire` INT(10) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) ,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`users_authorities`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`users_authorities` (
+  `id_user` INT(11) NOT NULL ,
+  `id_authorities` INT(11) NOT NULL ,
+  PRIMARY KEY (`id_user`, `id_authorities`) ,
+  INDEX `fk_user_ua_idx` (`id_user` ASC) ,
+  INDEX `fk_authorities_ua_idx` (`id_authorities` ASC) ,
+  CONSTRAINT `fk_user_ua`
+    FOREIGN KEY (`id_user` )
+    REFERENCES `payments_admin`.`users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_authorities_ua`
+    FOREIGN KEY (`id_authorities` )
+    REFERENCES `payments_admin`.`authorities` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`users_commerce`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`users_commerce` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `id_user` INT(11) NULL DEFAULT NULL ,
+  `id_commerce` INT(11) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_user_idx` (`id_user` ASC) ,
+  INDEX `fk_commerce_idx` (`id_commerce` ASC) ,
+  CONSTRAINT `fk_user_c`
+    FOREIGN KEY (`id_user` )
+    REFERENCES `payments_admin`.`users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_commerce_c`
+    FOREIGN KEY (`id_commerce` )
+    REFERENCES `payments_admin`.`commerce` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`users_financial_institution`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`users_financial_institution` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT ,
+  `id_user` INT(11) NULL DEFAULT NULL ,
+  `id_financial_institution` INT(11) NULL DEFAULT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_user_idx` (`id_user` ASC) ,
+  INDEX `fk_financial_idx` (`id_financial_institution` ASC) ,
+  CONSTRAINT `fk_user_if`
+    FOREIGN KEY (`id_user` )
+    REFERENCES `payments_admin`.`users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_financial_if`
+    FOREIGN KEY (`id_financial_institution` )
+    REFERENCES `payments_admin`.`financial_institution` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 0
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `payments_admin`.`users_questions_answers`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_admin`.`users_questions_answers` (
+  `id_user` INT(11) NOT NULL ,
+  `id_question_answer` INT(11) NOT NULL ,
+  PRIMARY KEY (`id_user`, `id_question_answer`) ,
+  INDEX `fk_question_uqa_idx` (`id_question_answer` ASC) ,
+  CONSTRAINT `fk_user_uqa`
+    FOREIGN KEY (`id_user` )
+    REFERENCES `payments_admin`.`users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_question_uqa`
+    FOREIGN KEY (`id_question_answer` )
+    REFERENCES `payments_admin`.`questions_answers` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+USE `payments_kit` ;
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`shopping_cart`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`shopping_cart` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `car_reference` VARCHAR(50) NULL ,
+  `agremment_id` INT(11) NULL ,
+  `arrival_date` INT(10) NULL ,
+  `channel_id` INT NULL ,
+  `status` INT NULL ,
+  `total` DECIMAL(10,2) NULL ,
+  `items_number` INT NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`items`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`items` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `id_cart` INT NULL ,
+  `number` VARCHAR(45) NULL ,
+  `identification` VARCHAR(45) NULL ,
+  `description` VARCHAR(200) NULL ,
+  `expire` VARCHAR(45) NULL ,
+  `amount` INT NULL ,
+  `quantity` INT NULL ,
+  `aditional_data` VARCHAR(500) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_cart_p_idx` (`id_cart` ASC) ,
+  CONSTRAINT `fk_cart_p`
+    FOREIGN KEY (`id_cart` )
+    REFERENCES `payments_kit`.`shopping_cart` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`notifications`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`notifications` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `shopping_cart_id` INT NULL ,
+  `status` INT NULL ,
+  `type` INT NULL ,
+  `return_code` VARCHAR(45) NULL ,
+  `return_description` VARCHAR(500) NULL ,
+  `total` INT NULL ,
+  `payment_numbers` INT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_shopping_cart_n_idx` (`shopping_cart_id` ASC) ,
+  CONSTRAINT `fk_shopping_cart_n`
+    FOREIGN KEY (`shopping_cart_id` )
+    REFERENCES `payments_kit`.`shopping_cart` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`conciliations_commerce`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`conciliations_commerce` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `commerce_id` INT NULL ,
+  `init_accounting_date` DATETIME NULL ,
+  `end_accounting_date` DATETIME NULL ,
+  `release_date` INT NULL ,
+  `status` INT NULL ,
+  `is_decrease` INT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_commerce_cf_idx` (`commerce_id` ASC) ,
+  CONSTRAINT `fk_commerce_cf`
+    FOREIGN KEY (`commerce_id` )
+    REFERENCES `payments_admin`.`commerce` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`conciliations_financial`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`conciliations_financial` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `financial_id` INT NULL ,
+  `arrival_date` DATETIME NULL ,
+  `init_accounting_date` DATETIME NULL ,
+  `end_accounting_date` DATETIME NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_financial_cf_idx` (`financial_id` ASC) ,
+  CONSTRAINT `fk_financial_cf`
+    FOREIGN KEY (`financial_id` )
+    REFERENCES `payments_admin`.`financial_institution` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`tracking`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`tracking` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `shopping_cart_id` INT NULL ,
+  `date` INT(10) NULL DEFAULT NULL ,
+  `code` VARCHAR(5) NULL ,
+  `msg` VARCHAR(50) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_shopping_cart_t_idx` (`shopping_cart_id` ASC) ,
+  CONSTRAINT `fk_shopping_cart_t`
+    FOREIGN KEY (`shopping_cart_id` )
+    REFERENCES `payments_kit`.`shopping_cart` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `payments_kit`.`notifications_extras`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `payments_kit`.`notifications_extras` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `id_notifications` INT NULL ,
+  `transaction_date` DATETIME NULL ,
+  `voucher_number` VARCHAR(50) NULL ,
+  `accouting_date` DATETIME NULL ,
+  `agreement_number` VARCHAR(10) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_notifications_ne_idx` (`id_notifications` ASC) ,
+  CONSTRAINT `fk_notifications_ne`
+    FOREIGN KEY (`id_notifications` )
+    REFERENCES `payments_kit`.`notifications` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+USE `payments_admin` ;
+USE `payments_kit` ;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

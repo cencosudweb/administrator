@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+<!-- 		<property name="hibernate.hbm2ddl.auto">create</property> -->
+<!-- 		<property name="hibernate.show_sql">true</property> -->
+		<mapping class="com.cencosud.administrator.dao.domain.Role"/>
+		<mapping class="com.cencosud.administrator.dao.domain.User"/>
+		<mapping class="com.cencosud.administrator.dao.domain.FinancialInstitution"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Commerce"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Agreement"/>
+		<mapping class="com.cencosud.administrator.dao.domain.UrlCallback"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EconomicActivity"/>
+		<mapping class="com.cencosud.administrator.dao.domain.QuestionAnswer"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Question"/>
+		<mapping class="com.cencosud.administrator.dao.domain.TimeLimit"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Channel"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.TipoOrden"/>
+		<mapping class="com.cencosud.administrator.dao.domain.TipoVenta"/>
+		<mapping class="com.cencosud.administrator.dao.domain.ClienteRetira"/>
+		<mapping class="com.cencosud.administrator.dao.domain.DescripcionEmpresa"/>
+		<mapping class="com.cencosud.administrator.dao.domain.TipoGuia"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Horario"/>
+		<mapping class="com.cencosud.administrator.dao.domain.VentaEmpresa"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoCumple"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoCumpleResumen"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoCumplimiento"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoResponsable"/>
+
+		<mapping class="com.cencosud.administrator.dao.domain.TipoEstadoOrdenCompraStock"/>
+		<mapping class="com.cencosud.administrator.dao.domain.TipoEstadoVentaEnVerde"/>
+		<mapping class="com.cencosud.administrator.dao.domain.HorarioActualizacionStock"/>
+		<mapping class="com.cencosud.administrator.dao.domain.HorarioVentaEnVerdeActualizacion"/>
+		<mapping class="com.cencosud.administrator.dao.domain.SystemLog"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.CumplimientoEstaticoWs"/>
+		
+		
+		<mapping class="com.cencosud.administrator.dao.domain.Pauta"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Prioridad"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Reportado"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Area"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Tienda"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Flag"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Padrino"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Gerente"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Contratante"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Soporte"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.CuadraturaOrdenCompraVentaComp"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.EcommerceSoporteVenta"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Estado"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.CumplimientokpiWeb"/>
+		<mapping class="com.cencosud.administrator.dao.domain.CuadraturaVentaVerde"/>
+		<mapping class="com.cencosud.administrator.dao.domain.Cumplimiento"/>
+		<mapping class="com.cencosud.administrator.dao.domain.HorarioTrazabilidadActualizacion"/>
+		<mapping class="com.cencosud.administrator.dao.domain.CuadraturaVtavPd"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoOd"/>
+		<mapping class="com.cencosud.administrator.dao.domain.SkuServicioWs"/>
+		<mapping class="com.cencosud.administrator.dao.domain.OrdeneStockPendiente"/>
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoOrdenStock"/>
+		<mapping class="com.cencosud.administrator.dao.domain.CuadraturaCtl"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.EstadoCtl"/>
+		<mapping class="com.cencosud.administrator.dao.domain.BodegaCtl"/>
+		
+		<mapping class="com.cencosud.administrator.dao.domain.CuadraturaDo"/>
+		
+	
+	</session-factory>
+</hibernate-configuration>

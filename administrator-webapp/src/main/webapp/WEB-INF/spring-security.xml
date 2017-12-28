@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+	<security:http auto-config="false" use-expressions="true"
+		entry-point-ref="authenticationEntryPoint">
+
+		<security:intercept-url pattern="/" access="permitAll" />
+		<security:intercept-url pattern="/bower_components/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/dist/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/build/**"
+			access="permitAll" />
+			<security:intercept-url pattern="/plugins/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/css/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/js/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/images/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/login/**"
+			access="permitAll" />
+		<security:intercept-url pattern="/logoff"
+			access="permitAll" />
+		<security:intercept-url pattern="/failLoginCredentials"
+			access="permitAll" />
+		<security:intercept-url pattern="/failLoginCredentialsExpired"
+			access="permitAll" />
+		<security:intercept-url pattern="/failAccountBlocked"
+			access="permitAll" />
+		<security:intercept-url pattern="/failLoginInvalidPassword"
+			access="permitAll" />
+		<security:intercept-url pattern="/forgotPassword"
+			access="permitAll" />
+		<security:intercept-url pattern="/showQuestionsForgot"
+			access="permitAll" />
+		<security:intercept-url pattern="/resetForgotPass"
+			access="permitAll" />
+		<security:intercept-url pattern="/resetPasswordTemp"
+			access="hasAnyRole('ROLE_ADMIN','ROLE_COMMERCE','ROLE_USER_IF','ROLE_PENDING')" />
+		<security:intercept-url pattern="/saveResetPasswordTemp"
+			access="hasAnyRole('ROLE_ADMIN','ROLE_COMMERCE','ROLE_USER_IF','ROLE_PENDING')" />
+		<security:intercept-url pattern="/saveQuestionsAnswer"
+			access="hasAnyRole('ROLE_ADMIN','ROLE_COMMERCE','ROLE_USER_IF','ROLE_PENDING')" />
+		<security:intercept-url pattern="/home"
+			access="hasAnyRole('ROLE_ADMIN','ROLE_COMMERCE','ROLE_USER_IF')" />
+		<!-- <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN') 
+			and hasIpAddress('172.16.100.199')"/> -->
+		<security:intercept-url pattern="/admin/**"
+			access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/commerce/**"
+			access="hasRole('ROLE_COMMERCE')" />
+		<security:intercept-url pattern="/financial/**"
+			access="hasRole('ROLE_USER_IF')" />
+		<security:intercept-url pattern="/**" access="denyAll" />
+
+		<security:logout invalidate-session="true" />
+
+		<!-- <security:logout invalidate-session="true" -->
+		<!-- logout-success-url="/logoutSuccess.jsp" -->
+		<!-- logout-url="/logout" delete-cookies="JSESSIONID" /> -->
+
+		<security:custom-filter ref="authenticationFilter"
+			position="FORM_LOGIN_FILTER" />
+		<security:access-denied-handler
+			error-page="/403" />
+
+
+	</security:http>
+
+	<!-- Custom filter for username and password. The real customization is 
+		done in the customAthenticationManager -->
+	<bean id="authenticationFilter"
+		class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter"
+		p:authenticationManager-ref="customAuthenticationManager"
+		p:authenticationFailureHandler-ref="customAuthenticationFailureHandler"
+		p:authenticationSuccessHandler-ref="customAuthenticationSuccessHandler" />
+
+	<!-- Custom authentication manager. In order to authenticate, username and 
+		password must not be the same -->
+	<bean id="customAuthenticationManager"
+		class="com.cencosud.administrator.web.authentication.CustomAuthenticationManager" />
+
+	<!-- We just actually need to set the default failure url here -->
+	<bean id="customAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
+
+		<property name="exceptionMappings">
+			<props>
+				<prop
+					key="org.springframework.security.authentication.BadCredentialsException">/failLoginCredentials</prop>
+				<prop
+					key="org.springframework.security.authentication.CredentialsExpiredException">/failLoginCredentialsExpired</prop>
+				<prop key="org.springframework.security.authentication.LockedException">/failAccountBlocked</prop>
+				<prop
+					key="org.springframework.security.authentication.DisabledException">/failLoginInvalidPassword</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- We just actually need to set the default target url here -->
+	<!-- <bean id="customAuthenticationSuccessHandler" -->
+	<!-- class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler" -->
+	<!-- p:defaultTargetUrl="/home" /> -->
+
+	<bean id="customAuthenticationSuccessHandler"
+		class="com.cencosud.administrator.web.authentication.CustomAuthenticationSuccessHandler" />
+
+
+	<!-- The AuthenticationEntryPoint is responsible for redirecting the user 
+		to a particular page, like a login page, whenever the server sends back a 
+		response requiring authentication -->
+	<!-- See Spring-Security Reference 5.4.1 for more info -->
+	<bean id="authenticationEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint"
+		p:loginFormUrl="/login" />
+
+	<!-- The tag below has no use but Spring Security needs it to autowire the 
+		parent property of org.springframework.security.authentication.ProviderManager. 
+		Otherwise we get an error A probable bug. This is still under investigation -->
+	<security:authentication-manager />
+</beans>
